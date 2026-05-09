@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Portfolio | {{ settings.site_name }}</title>
+    <meta name="description" content="View our portfolio of creative work including web design, branding, and motion graphics projects">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .portfolio-item { transition: all 0.3s ease; }
+        .portfolio-item:hover { transform: translateY(-5px); }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+        .border-royal-purple { border-color: {{ settings.primary_color }}; }
+        .bg-teal { background-color: {{ settings.secondary_color }}; }
+        .text-teal { color: {{ settings.secondary_color }}; }
+        .hover\:bg-royal-purple:hover { background-color: {{ settings.primary_color }}; }
+        .filter-btn.active { background-color: {{ settings.primary_color }}; color: white; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-3xl font-bold">
+                        <span class="logo-text text-royal-purple">{{ settings.logo_text }}</span>
+                        <span class="logo-studio text-slate">{{ settings.studio_text }}</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-slate hover:text-royal-purple transition">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-slate hover:text-royal-purple transition">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-slate hover:text-royal-purple transition">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-slate hover:text-royal-purple focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-base font-medium text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-base font-medium text-slate hover:text-royal-purple hover:bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-base font-medium text-royal-purple bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-slate hover:text-royal-purple hover:bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-base font-medium text-slate hover:text-royal-purple hover:bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">Our Portfolio</h1>
+            <p class="text-lg md:text-xl text-slate opacity-90 max-w-3xl mx-auto">A showcase of our recent work and the creative solutions we've delivered for clients across industries.</p>
+        </div>
+    </header>
+
+    <!-- Portfolio Filters -->
+    <section class="py-8 px-4 sm:px-6 lg:px-8 bg-cool-gray">
+        <div class="max-w-7xl mx-auto">
+            <div class="portfolio-filter flex flex-wrap justify-center gap-2" id="filter-buttons">
+                <button class="filter-btn px-4 py-2 rounded-full border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white transition active" data-filter="all">All Work</button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white transition" data-filter="web-design">Web Design</button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white transition" data-filter="branding">Branding</button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white transition" data-filter="motion">Motion Graphics</button>
+                <button class="filter-btn px-4 py-2 rounded-full border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white transition" data-filter="ui-ux">UI/UX Design</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Grid -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolio-grid">
+                {% for project in projects %}
+                <div class="portfolio-item" data-category="{{ project.category }}">
+                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition duration-300">
+                        {% if project.image_url %}
+                        <img src="{{ project.image_url }}" alt="{{ project.title }}" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105">
+                        {% elif project.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + project.image_filename) }}" alt="{{ project.title }}" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="{{ project.title }}" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105">
+                        {% endif %}
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate to-transparent opacity-80"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <h3 class="text-xl font-montserrat font-semibold text-white mb-1">{{ project.title }}</h3>
+                            <p class="text-cool-gray">{{ project.category|replace('-', ' ')|title }}</p>
+                        </div>
+                        <button class="absolute inset-0 z-10 view-project" data-id="{{ project.id }}"></button>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-span-3 text-center py-12">
+                    <p class="text-gray-500">No projects added yet. Check back soon!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div><h3 id="modal-title" class="text-2xl font-montserrat font-bold text-slate"></h3><p id="modal-category" class="text-teal"></p></div>
+                    <button id="modal-close" class="text-slate hover:text-royal-purple">✕</button>
+                </div>
+                <img id="modal-image" src="" class="w-full h-64 md:h-96 object-cover rounded-lg mb-6">
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><h4 class="font-montserrat font-semibold text-slate mb-2">Client</h4><p id="modal-client" class="text-slate opacity-80"></p></div>
+                    <div><h4 class="font-montserrat font-semibold text-slate mb-2">Year</h4><p id="modal-year" class="text-slate opacity-80"></p></div>
+                    <div><h4 class="font-montserrat font-semibold text-slate mb-2">Services</h4><p id="modal-services" class="text-slate opacity-80"></p></div>
+                </div>
+                <div><h4 class="font-montserrat font-semibold text-slate mb-4">Project Overview</h4><p id="modal-description" class="text-slate opacity-90 mb-6"></p></div>
+                <div><h4 class="font-montserrat font-semibold text-slate mb-4">The Challenge</h4><p id="modal-challenge" class="text-slate opacity-90 mb-6"></p></div>
+                <div><h4 class="font-montserrat font-semibold text-slate mb-4">Our Approach</h4><p id="modal-approach" class="text-slate opacity-90 mb-6"></p></div>
+                <div><h4 class="font-montserrat font-semibold text-slate mb-4">The Results</h4><p id="modal-results" class="text-slate opacity-90"></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-royal-purple">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-montserrat font-bold text-white mb-6">Inspired by Our Work?</h2>
+            <p class="text-xl text-white opacity-90 mb-8">Let's collaborate on your next project and create something incredible together.</p>
+            <a href="{{ url_for('contact') }}" class="inline-flex items-center px-8 py-4 bg-white text-royal-purple font-medium rounded-lg hover:bg-opacity-90 transition shadow-lg">Get in Touch</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div><h3 class="text-xl font-montserrat font-semibold mb-6"><span class="logo-text text-white">{{ settings.logo_text }}</span><span class="logo-studio text-cool-gray">{{ settings.studio_text }}</span></h3><p class="text-cool-gray mb-4">{{ settings.footer_text }}</p></div>
+                <div><h3 class="text-lg font-montserrat font-semibold mb-6">Quick Links</h3><ul class="space-y-3"><li><a href="{{ url_for('index') }}" class="text-cool-gray hover:text-white transition">Home</a></li><li><a href="{{ url_for('about') }}" class="text-cool-gray hover:text-white transition">About</a></li><li><a href="{{ url_for('services') }}" class="text-cool-gray hover:text-white transition">Services</a></li><li><a href="{{ url_for('portfolio') }}" class="text-cool-gray hover:text-white transition">Portfolio</a></li><li><a href="{{ url_for('blog_index') }}" class="text-cool-gray hover:text-white transition">Blog</a></li><li><a href="{{ url_for('contact') }}" class="text-cool-gray hover:text-white transition">Contact</a></li></ul></div>
+                <div><h3 class="text-lg font-montserrat font-semibold mb-6">Services</h3><ul class="space-y-3"><li><a href="{{ url_for('services') }}#web-design" class="text-cool-gray hover:text-white transition">Web Design</a></li><li><a href="{{ url_for('services') }}#branding" class="text-cool-gray hover:text-white transition">Branding</a></li><li><a href="{{ url_for('services') }}#motion-graphics" class="text-cool-gray hover:text-white transition">Motion Graphics</a></li><li><a href="{{ url_for('services') }}#ui-ux" class="text-cool-gray hover:text-white transition">UI/UX Design</a></li><li><a href="{{ url_for('services') }}#development" class="text-cool-gray hover:text-white transition">Development</a></li></ul></div>
+                <div><h3 class="text-lg font-montserrat font-semibold mb-6">Contact</h3><ul class="space-y-3"><li class="text-cool-gray">{{ settings.contact_address }}</li><li><a href="tel:{{ settings.contact_phone }}" class="text-cool-gray hover:text-white transition">{{ settings.contact_phone }}</a></li><li><a href="mailto:{{ settings.contact_email }}" class="text-cool-gray hover:text-white transition">{{ settings.contact_email }}</a></li></ul></div>
+            </div>
+            <div class="border-t border-slate-800 mt-12 pt-8 text-center"><p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p></div>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn) mobileMenuBtn.onclick = () => mobileMenu.classList.toggle('hidden');
+        
+        // Back to top
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.portfolio-item');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                items.forEach(item => {
+                    if(filter === 'all' || item.dataset.category === filter) item.classList.remove('hidden');
+                    else item.classList.add('hidden');
+                });
+            });
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('project-modal');
+        const modalClose = document.getElementById('modal-close');
+        const projectsData = {{ projects|tojson|safe }};
+        
+        document.querySelectorAll('.view-project').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const project = projectsData.find(p => p.id == id);
+                if(project) {
+                    document.getElementById('modal-title').textContent = project.title;
+                    document.getElementById('modal-category').textContent = project.category;
+                    document.getElementById('modal-image').src = project.image_url || '/static/uploads/' + (project.image_filename || '');
+                    document.getElementById('modal-client').textContent = project.client || '—';
+                    document.getElementById('modal-year').textContent = project.year || '—';
+                    document.getElementById('modal-services').textContent = project.services || '—';
+                    document.getElementById('modal-description').textContent = project.description || '—';
+                    document.getElementById('modal-challenge').textContent = project.challenge || '—';
+                    document.getElementById('modal-approach').textContent = project.approach || '—';
+                    document.getElementById('modal-results').textContent = project.results || '—';
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            });
+        });
+        
+        if(modalClose) modalClose.onclick = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+        modal.onclick = (e) => { if(e.target === modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } };
+    </script>
+</body>
+</html>

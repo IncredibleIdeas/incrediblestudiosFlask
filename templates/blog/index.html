@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ settings.site_name }} - Blog</title>
+    <meta name="description" content="Read our latest blog posts about design, development, and creative insights">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+        .border-royal-purple { border-color: {{ settings.primary_color }}; }
+        .bg-teal { background-color: {{ settings.secondary_color }}; }
+        .text-teal { color: {{ settings.secondary_color }}; }
+        .hover\:bg-royal-purple:hover { background-color: {{ settings.primary_color }}; }
+        .hover\:text-royal-purple:hover { color: {{ settings.primary_color }}; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-3xl font-bold">
+                        <span class="logo-text text-royal-purple">{{ settings.logo_text }}</span>
+                        <span class="logo-studio text-slate">{{ settings.studio_text }}</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-slate hover:text-royal-purple transition">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-slate hover:text-royal-purple transition">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-slate hover:text-royal-purple transition">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-slate hover:text-royal-purple focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-royal-purple bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">Our Blog</h1>
+            <p class="text-lg md:text-xl text-slate opacity-90 max-w-3xl mx-auto">Insights, tips, and stories from our creative team.</p>
+        </div>
+    </header>
+
+    <div class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="lg:grid lg:grid-cols-3 lg:gap-12">
+                <!-- Main Content -->
+                <div class="lg:col-span-2">
+                    {% if current_category %}
+                    <div class="mb-8 p-4 bg-teal bg-opacity-10 rounded-lg">
+                        <h2 class="text-2xl font-montserrat font-bold text-slate">Category: {{ current_category.name }}</h2>
+                        {% if current_category.description %}<p class="text-slate opacity-80 mt-2">{{ current_category.description }}</p>{% endif %}
+                    </div>
+                    {% elif current_tag %}
+                    <div class="mb-8 p-4 bg-teal bg-opacity-10 rounded-lg">
+                        <h2 class="text-2xl font-montserrat font-bold text-slate">Tag: #{{ current_tag.name }}</h2>
+                    </div>
+                    {% endif %}
+                    
+                    {% for post in posts.items %}
+                    <article class="mb-12 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-64 object-cover">
+                        {% endif %}
+                        <div class="p-6">
+                            <div class="flex items-center text-sm text-slate opacity-60 mb-3">
+                                <span>{{ post.published_at.strftime('%B %d, %Y') if post.published_at else post.created_at.strftime('%B %d, %Y') }}</span>
+                                <span class="mx-2">•</span>
+                                <span>{{ post.views }} views</span>
+                                {% if post.category %}
+                                <span class="mx-2">•</span>
+                                <a href="{{ url_for('blog_category', slug=post.category.slug) }}" class="text-teal hover:underline">{{ post.category.name }}</a>
+                                {% endif %}
+                            </div>
+                            <h2 class="text-2xl font-montserrat font-bold text-slate mb-3 hover:text-royal-purple transition">
+                                <a href="{{ url_for('blog_post', slug=post.slug) }}">{{ post.title }}</a>
+                            </h2>
+                            <p class="text-slate opacity-80 mb-4">{{ post.excerpt or post.content[:200]|striptags }}...</p>
+                            <div class="flex items-center justify-between">
+                                <a href="{{ url_for('blog_post', slug=post.slug) }}" class="text-teal font-medium hover:underline">Read More →</a>
+                                <div class="flex gap-2">
+                                    {% for tag in post.tags[:3] %}
+                                    <a href="{{ url_for('blog_tag', slug=tag.slug) }}" class="text-xs bg-gray-100 px-2 py-1 rounded-full hover:bg-teal hover:text-white transition">#{{ tag.name }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <p class="text-gray-500">No posts found.</p>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Pagination -->
+                    {% if posts.pages > 1 %}
+                    <div class="flex justify-center gap-2 mt-8">
+                        {% if posts.has_prev %}
+                        <a href="{{ url_for('blog_index', page=posts.prev_num) }}" class="px-4 py-2 border border-royal-purple text-royal-purple rounded-lg hover:bg-royal-purple hover:text-white transition">Previous</a>
+                        {% endif %}
+                        <span class="px-4 py-2 bg-royal-purple text-white rounded-lg">{{ posts.page }}</span>
+                        {% if posts.has_next %}
+                        <a href="{{ url_for('blog_index', page=posts.next_num) }}" class="px-4 py-2 border border-royal-purple text-royal-purple rounded-lg hover:bg-royal-purple hover:text-white transition">Next</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 mt-8 lg:mt-0">
+                    <!-- Search -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-xl font-montserrat font-bold text-slate mb-4">Search</h3>
+                        <form action="{{ url_for('search_blog') }}" method="GET">
+                            <div class="flex">
+                                <input type="text" name="q" placeholder="Search posts..." class="flex-1 px-4 py-2 border rounded-l-lg focus:outline-none focus:border-royal-purple">
+                                <button type="submit" class="px-4 py-2 bg-royal-purple text-white rounded-r-lg hover:bg-opacity-90">🔍</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Categories -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-xl font-montserrat font-bold text-slate mb-4">Categories</h3>
+                        <ul class="space-y-2">
+                            {% for category, count in categories %}
+                            <li>
+                                <a href="{{ url_for('blog_category', slug=category.slug) }}" class="flex justify-between items-center text-slate hover:text-royal-purple transition">
+                                    <span>{{ category.name }}</span>
+                                    <span class="text-sm text-gray-500">({{ count }})</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Recent Posts -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-xl font-montserrat font-bold text-slate mb-4">Recent Posts</h3>
+                        <ul class="space-y-3">
+                            {% for recent in recent_posts %}
+                            <li>
+                                <a href="{{ url_for('blog_post', slug=recent.slug) }}" class="block hover:text-royal-purple transition">
+                                    <p class="font-medium text-slate">{{ recent.title }}</p>
+                                    <p class="text-xs text-gray-500">{{ recent.published_at.strftime('%B %d, %Y') if recent.published_at else recent.created_at.strftime('%B %d, %Y') }}</p>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-montserrat font-bold text-slate mb-4">Popular Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for tag in tags %}
+                            <a href="{{ url_for('blog_tag', slug=tag.slug) }}" class="text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-teal hover:text-white transition">#{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div>
+                    <h3 class="text-xl font-montserrat font-semibold mb-6">
+                        <span class="logo-text text-white">{{ settings.logo_text }}</span>
+                        <span class="logo-studio text-cool-gray">{{ settings.studio_text }}</span>
+                    </h3>
+                    <p class="text-cool-gray mb-4">{{ settings.footer_text }}</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-montserrat font-semibold mb-6">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('index') }}" class="text-cool-gray hover:text-white transition">Home</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-cool-gray hover:text-white transition">About Us</a></li>
+                        <li><a href="{{ url_for('services') }}" class="text-cool-gray hover:text-white transition">Services</a></li>
+                        <li><a href="{{ url_for('portfolio') }}" class="text-cool-gray hover:text-white transition">Portfolio</a></li>
+                        <li><a href="{{ url_for('blog_index') }}" class="text-cool-gray hover:text-white transition">Blog</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-cool-gray hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-montserrat font-semibold mb-6">Services</h3>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('services') }}#web-design" class="text-cool-gray hover:text-white transition">Web Design</a></li>
+                        <li><a href="{{ url_for('services') }}#branding" class="text-cool-gray hover:text-white transition">Branding</a></li>
+                        <li><a href="{{ url_for('services') }}#motion-graphics" class="text-cool-gray hover:text-white transition">Motion Graphics</a></li>
+                        <li><a href="{{ url_for('services') }}#ui-ux" class="text-cool-gray hover:text-white transition">UI/UX Design</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-montserrat font-semibold mb-6">Contact Us</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-cool-gray">📍 {{ settings.contact_address }}</span></li>
+                        <li class="flex items-center"><a href="tel:{{ settings.contact_phone }}" class="text-cool-gray hover:text-white transition">📞 {{ settings.contact_phone }}</a></li>
+                        <li class="flex items-center"><a href="mailto:{{ settings.contact_email }}" class="text-cool-gray hover:text-white transition">✉️ {{ settings.contact_email }}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 mt-12 pt-8 text-center">
+                <p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn) mobileMenuBtn.onclick = () => mobileMenu.classList.toggle('hidden');
+        
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    </script>
+</body>
+</html>

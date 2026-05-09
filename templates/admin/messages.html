@@ -1,0 +1,103 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Contact Messages</h1>
+    <p class="text-gray-600 mt-1">View and manage messages from your contact form.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Status</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Name</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Email</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Subject</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Service</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Date</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in messages %}
+            <tr class="border-b hover:bg-gray-50 {% if not msg.is_read %}bg-yellow-50{% endif %}">
+                <td class="px-6 py-4">
+                    {% if not msg.is_read %}
+                    <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    {% else %}
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 font-medium">{{ msg.name }}</td>
+                <td class="px-6 py-4">{{ msg.email }}</td>
+                <td class="px-6 py-4">{{ msg.subject }}</td>
+                <td class="px-6 py-4">{{ msg.service or '-' }}</td>
+                <td class="px-6 py-4 text-sm">{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="px-6 py-4">
+                    <button onclick="viewMessage({{ msg.id }}, {{ msg.name|tojson|safe }}, {{ msg.email|tojson|safe }}, {{ msg.subject|tojson|safe }}, {{ msg.message|tojson|safe }})" class="text-blue-600 hover:text-blue-800 mr-3">View</button>
+                    <button onclick="deleteMessage({{ msg.id }})" class="text-red-600 hover:text-red-800">Delete</button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">No messages yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Message Modal -->
+<div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-bold text-gray-800" id="modalTitle"></h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-gray-600"><strong>From:</strong> <span id="modalEmail"></span></p>
+                <p class="text-gray-600 mt-2"><strong>Subject:</strong> <span id="modalSubject"></span></p>
+            </div>
+            <div class="border-t pt-4">
+                <p class="text-gray-700 whitespace-pre-wrap" id="modalMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentMessageId = null;
+
+function viewMessage(id, name, email, subject, message) {
+    currentMessageId = id;
+    document.getElementById('modalTitle').textContent = 'Message from ' + name;
+    document.getElementById('modalEmail').textContent = email;
+    document.getElementById('modalSubject').textContent = subject;
+    document.getElementById('modalMessage').textContent = message;
+    document.getElementById('messageModal').classList.add('flex');
+    document.getElementById('messageModal').classList.remove('hidden');
+    
+    // Mark as read
+    fetch(`/admin/messages/mark-read/${id}`).catch(err => console.error(err));
+}
+
+function closeModal() {
+    document.getElementById('messageModal').classList.add('hidden');
+    document.getElementById('messageModal').classList.remove('flex');
+}
+
+function deleteMessage(id) {
+    if (confirm('Are you sure you want to delete this message?')) {
+        fetch(`/admin/messages/delete/${id}`).then(() => {
+            location.reload();
+        }).catch(err => console.error(err));
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.2
+Werkzeug==2.3.7
+python-dotenv==1.0.0
+email-validator==2.0.0
+pillow==10.0.0
+Flask-Mail==0.9.1
+qrcode==7.4.2
+pyotp==2.9.0
+user-agents==2.2.0
+geoip2==4.8.0
+pycountry==22.3.5

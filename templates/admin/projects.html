@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">Projects</h1>
+        <p class="text-gray-600 mt-1">Manage your portfolio projects.</p>
+    </div>
+    <a href="{{ url_for('add_project') }}" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">
+        + Add New Project
+    </a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Image</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Title</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Category</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Client</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Year</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Featured</th>
+                <th class="text-left px-6 py-3 text-gray-600 font-medium">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-6 py-4">
+                    {% if project.image_url %}
+                    <img src="{{ project.image_url }}" class="h-12 w-12 object-cover rounded">
+                    {% elif project.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' + project.image_filename) }}" class="h-12 w-12 object-cover rounded">
+                    {% else %}
+                    <div class="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-gray-400">No img</div>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 font-medium">{{ project.title }}</td>
+                <td class="px-6 py-4">{{ project.category }}</td>
+                <td class="px-6 py-4">{{ project.client or '-' }}</td>
+                <td class="px-6 py-4">{{ project.year or '-' }}</td>
+                <td class="px-6 py-4">
+                    {% if project.featured %}
+                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">Yes</span>
+                    {% else %}
+                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">No</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('edit_project', id=project.id) }}" class="text-blue-600 hover:text-blue-800 mr-3">Edit</a>
+                    <a href="{{ url_for('delete_project', id=project.id) }}" class="text-red-600 hover:text-red-800" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">No projects added yet. Click "Add New Project" to get started.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

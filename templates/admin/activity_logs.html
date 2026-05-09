@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Activity Logs</h1>
+    <p class="text-gray-600 mt-1">View all admin user activities.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left">User</th>
+                <th class="px-6 py-3 text-left">Action</th>
+                <th class="px-6 py-3 text-left">Details</th>
+                <th class="px-6 py-3 text-left">IP Address</th>
+                <th class="px-6 py-3 text-left">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr class="border-b">
+                <td class="px-6 py-4">{{ log.user.username if log.user else 'System' }}</td>
+                <td class="px-6 py-4">{{ log.action }}</td>
+                <td class="px-6 py-4">{{ log.details or '-' }}</td>
+                <td class="px-6 py-4 text-sm">{{ log.ip_address or '-' }}</td>
+                <td class="px-6 py-4 text-sm">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

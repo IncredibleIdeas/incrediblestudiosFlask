@@ -1,0 +1,75 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div><h1 class="text-3xl font-bold text-gray-800">Services</h1><p class="text-gray-600 mt-1">Manage your service offerings.</p></div>
+    <button onclick="openAddModal()" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">+ Add Service</button>
+</div>
+
+<!-- Services List -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left">Order</th><th class="px-6 py-3 text-left">Title</th><th class="px-6 py-3 text-left">Description</th><th class="px-6 py-3 text-left">Active</th><th class="px-6 py-3 text-left">Actions</th></tr></thead>
+        <tbody>
+            {% for service in services %}
+            <tr class="border-b">
+                <td class="px-6 py-4">{{ service.order }}</td>
+                <td class="px-6 py-4 font-medium">{{ service.title }}</td>
+                <td class="px-6 py-4">{{ service.description[:100] }}...</td>
+                <td class="px-6 py-4">{% if service.active %}✅{% else %}❌{% endif %}</td>
+                <td class="px-6 py-4"><button onclick="editService({{ service.id }})" class="text-blue-600 mr-3">Edit</button><a href="{{ url_for('delete_service', id=service.id) }}" onclick="return confirm('Delete this service?')" class="text-red-600">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="serviceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-auto p-6">
+        <div class="flex justify-between items-center mb-4"><h2 id="modalTitle" class="text-xl font-bold">Add Service</h2><button onclick="closeModal()" class="text-gray-500">✕</button></div>
+        <form id="serviceForm" method="POST" action="{{ url_for('admin_services') }}">
+            <input type="hidden" id="service_id" name="service_id">
+            <div class="space-y-4">
+                <div><label class="block text-sm font-medium mb-1">Title</label><input type="text" id="title" name="title" required class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Description</label><textarea id="description" name="description" rows="3" required class="w-full px-3 py-2 border rounded-lg"></textarea></div>
+                <div><label class="block text-sm font-medium mb-1">Icon Name</label><select id="icon_name" name="icon_name" class="w-full px-3 py-2 border rounded-lg"><option value="web">Web Design</option><option value="branding">Branding</option><option value="motion">Motion Graphics</option><option value="ui-ux">UI/UX</option><option value="development">Development</option></select></div>
+                <div><label class="block text-sm font-medium mb-1">Features (one per line)</label><textarea id="features" name="features" rows="4" class="w-full px-3 py-2 border rounded-lg" placeholder="Custom website design&#10;Responsive development&#10;E-commerce solutions"></textarea></div>
+                <div><label class="block text-sm font-medium mb-1">Order</label><input type="number" id="order" name="order" value="0" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="flex items-center"><input type="checkbox" id="active" name="active" class="mr-2"> <span>Active</span></label></div>
+            </div>
+            <div class="flex justify-end mt-6"><button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg">Save Service</button></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Add Service';
+        document.getElementById('serviceForm').reset();
+        document.getElementById('serviceForm').action = "{{ url_for('admin_services') }}";
+        document.getElementById('serviceModal').classList.add('flex');
+        document.getElementById('serviceModal').classList.remove('hidden');
+    }
+    
+    function editService(id) {
+        fetch(`/admin/services/data/${id}`).then(r => r.json()).then(data => {
+            document.getElementById('modalTitle').textContent = 'Edit Service';
+            document.getElementById('title').value = data.title;
+            document.getElementById('description').value = data.description;
+            document.getElementById('icon_name').value = data.icon_name;
+            document.getElementById('features').value = data.features;
+            document.getElementById('order').value = data.order;
+            document.getElementById('active').checked = data.active;
+            document.getElementById('serviceForm').action = `/admin/services/edit/${id}`;
+            document.getElementById('serviceModal').classList.add('flex');
+            document.getElementById('serviceModal').classList.remove('hidden');
+        });
+    }
+    
+    function closeModal() {
+        document.getElementById('serviceModal').classList.add('hidden');
+        document.getElementById('serviceModal').classList.remove('flex');
+    }
+</script>
+{% endblock %}

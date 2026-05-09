@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services | {{ settings.site_name }}</title>
+    <meta name="description" content="Comprehensive creative services including web design, branding, motion graphics, and more">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+        .border-royal-purple { border-color: {{ settings.primary_color }}; }
+        .bg-teal { background-color: {{ settings.secondary_color }}; }
+        .text-teal { color: {{ settings.secondary_color }}; }
+        .service-card:hover .service-icon { transform: rotateY(180deg); }
+        .service-icon { transition: transform 0.6s; transform-style: preserve-3d; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div><a href="{{ url_for('index') }}" class="text-3xl font-bold"><span class="logo-text text-royal-purple">{{ settings.logo_text }}</span><span class="logo-studio text-slate">{{ settings.studio_text }}</span></a></div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-slate hover:text-royal-purple transition">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-slate hover:text-royal-purple transition">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-slate hover:text-royal-purple transition">Contact</a>
+                </div>
+                <div class="md:hidden"><button id="mobile-menu-button" class="text-slate hover:text-royal-purple"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-royal-purple bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">Our Services</h1>
+            <p class="text-lg md:text-xl text-slate opacity-90 max-w-3xl mx-auto">Comprehensive creative solutions tailored to your unique needs and goals.</p>
+        </div>
+    </header>
+
+    <!-- Services Overview -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-teal bg-opacity-10 text-teal rounded-full text-sm font-medium mb-4">What We Offer</span>
+                <h2 class="text-3xl font-montserrat font-bold text-slate mb-4">Creative Services That Deliver Results</h2>
+                <p class="max-w-2xl mx-auto text-lg text-slate opacity-80">From concept to execution, we provide end-to-end creative solutions that help brands stand out and succeed.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for service in services %}
+                <div id="{{ service.icon_name }}" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon">
+                        {% if service.icon_name == 'web' %}
+                        <svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        {% elif service.icon_name == 'branding' %}
+                        <svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+                        {% elif service.icon_name == 'motion' %}
+                        <svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        {% elif service.icon_name == 'ui-ux' %}
+                        <svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        {% else %}
+                        <svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">{{ service.title }}</h3>
+                    <p class="text-slate opacity-80 mb-4">{{ service.description }}</p>
+                    <ul class="space-y-2 mb-6">
+                        {% set features = service.features|from_json if service.features else [] %}
+                        {% for feature in features[:3] %}
+                        <li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>{{ feature }}</span></li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                {% else %}
+                <!-- Default services if none in database -->
+                <div id="web-design" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">Web Design & Development</h3>
+                    <p class="text-slate opacity-80 mb-4">Beautiful, responsive websites that engage visitors and convert them into customers.</p>
+                    <ul class="space-y-2 mb-6"><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Custom website design</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Responsive development</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>E-commerce solutions</span></li></ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                <div id="branding" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg></div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">Brand Identity</h3>
+                    <p class="text-slate opacity-80 mb-4">Complete branding solutions that establish a memorable and cohesive visual identity.</p>
+                    <ul class="space-y-2 mb-6"><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Logo design</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Brand guidelines</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Visual identity systems</span></li></ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                <div id="motion-graphics" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">Motion Graphics</h3>
+                    <p class="text-slate opacity-80 mb-4">Dynamic animations and videos that tell your brand story in a captivating way.</p>
+                    <ul class="space-y-2 mb-6"><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Animated explainers</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Logo animations</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Social media content</span></li></ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                <div id="ui-ux" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">UI/UX Design</h3>
+                    <p class="text-slate opacity-80 mb-4">Intuitive, user-centered interfaces that provide seamless experiences and drive engagement.</p>
+                    <ul class="space-y-2 mb-6"><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>User research</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Wireframing & prototyping</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Interaction design</span></li></ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                <div id="development" class="service-card bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition border border-cool-gray">
+                    <div class="w-14 h-14 bg-royal-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6 service-icon"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
+                    <h3 class="text-xl font-montserrat font-semibold text-slate mb-3">Custom Development</h3>
+                    <p class="text-slate opacity-80 mb-4">Tailored digital solutions that address your specific business needs and challenges.</p>
+                    <ul class="space-y-2 mb-6"><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Web applications</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>API integrations</span></li><li class="flex items-start"><svg class="h-5 w-5 text-teal mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>Database solutions</span></li></ul>
+                    <a href="{{ url_for('contact') }}" class="inline-flex items-center text-teal font-medium hover:text-teal-700 transition">Get a Quote →</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-cool-gray">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-teal bg-opacity-10 text-teal rounded-full text-sm font-medium mb-4">Our Approach</span>
+                <h2 class="text-3xl font-montserrat font-bold text-slate mb-4">The Incredible Process</h2>
+                <p class="max-w-2xl mx-auto text-lg text-slate opacity-80">A structured yet flexible approach that ensures quality and efficiency at every stage.</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="w-16 h-16 bg-royal-purple bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-2xl font-bold text-royal-purple">1</span></div><h3 class="text-lg font-semibold text-slate mb-2">Discover</h3><p class="text-sm text-slate opacity-80">We start by understanding your business, goals, and audience.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="w-16 h-16 bg-royal-purple bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-2xl font-bold text-royal-purple">2</span></div><h3 class="text-lg font-semibold text-slate mb-2">Design</h3><p class="text-sm text-slate opacity-80">Our creative team develops concepts and prototypes.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="w-16 h-16 bg-royal-purple bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-2xl font-bold text-royal-purple">3</span></div><h3 class="text-lg font-semibold text-slate mb-2">Develop</h3><p class="text-sm text-slate opacity-80">We bring designs to life with clean, efficient code.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="w-16 h-16 bg-royal-purple bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-2xl font-bold text-royal-purple">4</span></div><h3 class="text-lg font-semibold text-slate mb-2">Deliver</h3><p class="text-sm text-slate opacity-80">We launch your project and provide ongoing support.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-royal-purple">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-montserrat font-bold text-white mb-6">Ready to Discuss Your Project?</h2>
+            <p class="text-xl text-white opacity-90 mb-8">Let's explore how we can bring your vision to life with our creative services.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{{ url_for('contact') }}" class="px-8 py-4 bg-white text-royal-purple font-medium rounded-lg hover:bg-opacity-90 transition shadow-lg">Get Started</a>
+                <a href="tel:{{ settings.contact_phone }}" class="px-8 py-4 border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-royal-purple transition">Call Us Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenuDiv = document.getElementById('mobile-menu');
+        if(mobileBtn) mobileBtn.onclick = () => mobileMenuDiv.classList.toggle('hidden');
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    </script>
+</body>
+</html>

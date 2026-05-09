@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} - {{ settings.site_name }}</title>
+    <meta name="description" content="{{ post.seo_description or post.excerpt[:160] }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+        .border-royal-purple { border-color: {{ settings.primary_color }}; }
+        .bg-teal { background-color: {{ settings.secondary_color }}; }
+        .text-teal { color: {{ settings.secondary_color }}; }
+        .prose { max-width: none; }
+        .prose p { margin-bottom: 1.25rem; line-height: 1.75; }
+        .prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.25rem; }
+        .prose ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1.25rem; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation (same as index.html) -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-3xl font-bold">
+                        <span class="logo-text text-royal-purple">{{ settings.logo_text }}</span>
+                        <span class="logo-studio text-slate">{{ settings.studio_text }}</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-slate hover:text-royal-purple transition">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-slate hover:text-royal-purple transition">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-slate hover:text-royal-purple transition">Contact</a>
+                </div>
+                <div class="md:hidden"><button id="mobile-menu-button" class="text-slate hover:text-royal-purple"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-royal-purple bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Content -->
+    <div class="pt-32 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-4xl mx-auto text-center">
+            {% if post.category %}
+            <a href="{{ url_for('blog_category', slug=post.category.slug) }}" class="inline-block px-3 py-1 bg-teal bg-opacity-10 text-teal rounded-full text-sm font-medium mb-4">{{ post.category.name }}</a>
+            {% endif %}
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">{{ post.title }}</h1>
+            <div class="flex items-center justify-center gap-4 text-sm text-slate opacity-60">
+                <span>{{ post.published_at.strftime('%B %d, %Y') if post.published_at else post.created_at.strftime('%B %d, %Y') }}</span>
+                <span>•</span>
+                <span>{{ post.views }} views</span>
+                <span>•</span>
+                <span>{{ post.comments|selectattr('status', 'equalto', 'approved')|list|length }} comments</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full rounded-xl shadow-lg mb-8">
+            {% endif %}
+            
+            <div class="prose prose-lg max-w-none">
+                {{ post.content|safe }}
+            </div>
+            
+            <!-- Tags -->
+            {% if post.tags %}
+            <div class="flex flex-wrap gap-2 mt-8 pt-8 border-t">
+                {% for tag in post.tags %}
+                <a href="{{ url_for('blog_tag', slug=tag.slug) }}" class="text-sm bg-gray-100 px-3 py-1 rounded-full hover:bg-teal hover:text-white transition">#{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Social Sharing -->
+            <div class="mt-8 pt-8 border-t">
+                <h3 class="text-lg font-semibold text-slate mb-3">Share this post:</h3>
+                <div class="flex gap-3">
+                    <a href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}&url={{ request.url|urlencode }}" target="_blank" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-80 transition">🐦 Twitter</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-opacity-80 transition">📘 Facebook</a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url|urlencode }}&title={{ post.title|urlencode }}" target="_blank" class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-opacity-80 transition">🔗 LinkedIn</a>
+                </div>
+            </div>
+            
+            <!-- Related Posts -->
+            {% if related_posts %}
+            <div class="mt-12 pt-8 border-t">
+                <h3 class="text-2xl font-montserrat font-bold text-slate mb-6">Related Posts</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    {% for related in related_posts %}
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
+                        {% if related.featured_image %}
+                        <img src="{{ related.featured_image }}" alt="{{ related.title }}" class="w-full h-40 object-cover">
+                        {% endif %}
+                        <div class="p-4">
+                            <h4 class="font-semibold text-slate mb-2"><a href="{{ url_for('blog_post', slug=related.slug) }}" class="hover:text-royal-purple">{{ related.title }}</a></h4>
+                            <p class="text-sm text-gray-500">{{ related.published_at.strftime('%B %d, %Y') if related.published_at else related.created_at.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Comments Section -->
+            <div class="mt-12 pt-8 border-t">
+                <h3 class="text-2xl font-montserrat font-bold text-slate mb-6">Comments ({{ post.comments|selectattr('status', 'equalto', 'approved')|list|length }})</h3>
+                
+                {% for comment in comments %}
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg" id="comment-{{ comment.id }}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <strong class="text-slate">{{ comment.author_name }}</strong>
+                            <span class="text-sm text-gray-500 ml-2">{{ comment.created_at.strftime('%B %d, %Y') }}</span>
+                        </div>
+                        <button onclick="replyToComment({{ comment.id }}, '{{ comment.author_name }}')" class="text-sm text-teal hover:underline">Reply</button>
+                    </div>
+                    <p class="text-slate opacity-80">{{ comment.content }}</p>
+                    
+                    {% for reply in comment.replies if reply.status == 'approved' %}
+                    <div class="ml-8 mt-4 p-3 bg-white rounded-lg border">
+                        <div class="mb-1">
+                            <strong class="text-slate">{{ reply.author_name }}</strong>
+                            <span class="text-sm text-gray-500 ml-2">{{ reply.created_at.strftime('%B %d, %Y') }}</span>
+                        </div>
+                        <p class="text-slate opacity-80">{{ reply.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+                
+                <!-- Comment Form -->
+                <div class="mt-8 p-6 bg-white rounded-xl shadow-md" id="comment-form">
+                    <h4 class="text-xl font-semibold text-slate mb-4">Leave a Comment</h4>
+                    <form id="comment-submit-form">
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <input type="hidden" name="parent_id" id="parent_id" value="">
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <input type="text" name="author_name" placeholder="Your Name *" required class="px-4 py-2 border rounded-lg focus:outline-none focus:border-royal-purple">
+                            <input type="email" name="author_email" placeholder="Your Email *" required class="px-4 py-2 border rounded-lg focus:outline-none focus:border-royal-purple">
+                        </div>
+                        <div class="mb-4">
+                            <input type="url" name="author_website" placeholder="Your Website (optional)" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-royal-purple">
+                        </div>
+                        <div class="mb-4">
+                            <textarea name="content" rows="5" placeholder="Your Comment *" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-royal-purple"></textarea>
+                        </div>
+                        <div id="comment-reply-info" class="hidden mb-3 p-2 bg-gray-100 rounded text-sm">
+                            Replying to: <span id="reply-to-name"></span>
+                            <button type="button" onclick="cancelReply()" class="ml-2 text-red-500">Cancel</button>
+                        </div>
+                        <button type="submit" class="px-6 py-2 bg-royal-purple text-white rounded-lg hover:bg-opacity-90 transition">Submit Comment</button>
+                    </form>
+                    <div id="comment-message" class="mt-4 text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center"><p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p></div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenuDiv = document.getElementById('mobile-menu');
+        if(mobileBtn) mobileBtn.onclick = () => mobileMenuDiv.classList.toggle('hidden');
+        
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        function replyToComment(commentId, authorName) {
+            document.getElementById('parent_id').value = commentId;
+            document.getElementById('reply-to-name').innerText = authorName;
+            document.getElementById('comment-reply-info').classList.remove('hidden');
+            document.getElementById('comment-form').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function cancelReply() {
+            document.getElementById('parent_id').value = '';
+            document.getElementById('comment-reply-info').classList.add('hidden');
+        }
+        
+        document.getElementById('comment-submit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const messageDiv = document.getElementById('comment-message');
+            messageDiv.innerHTML = '<p class="text-gray-500">Submitting...</p>';
+            
+            try {
+                const res = await fetch('{{ url_for("add_comment") }}', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (data.success) {
+                    messageDiv.innerHTML = '<p class="text-green-600">✅ ' + data.message + '</p>';
+                    e.target.reset();
+                    cancelReply();
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    messageDiv.innerHTML = '<p class="text-red-600">❌ ' + data.message + '</p>';
+                }
+            } catch (err) {
+                messageDiv.innerHTML = '<p class="text-red-600">❌ Something went wrong. Please try again.</p>';
+            }
+            
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        });
+    </script>
+</body>
+</html>

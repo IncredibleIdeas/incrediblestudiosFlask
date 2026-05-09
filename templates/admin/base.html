@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Incredible Studios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[#2F2F3C] text-white flex-shrink-0 overflow-y-auto">
+            <div class="p-6 border-b border-gray-700">
+                <h2 class="text-xl font-bold">Incredible Studios</h2>
+                <p class="text-sm text-gray-400 mt-1">Admin Panel</p>
+            </div>
+            <nav class="p-4">
+                <!-- Main Menu -->
+                <a href="{{ url_for('admin_dashboard') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_dashboard' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                
+                <a href="{{ url_for('admin_settings') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_settings' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Site Settings
+                </a>
+                
+                <a href="{{ url_for('admin_seo') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_seo' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    SEO Tools
+                </a>
+                
+                <a href="{{ url_for('admin_analytics') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_analytics' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Analytics
+                </a>
+                
+                <hr class="my-4 border-gray-700">
+                
+                <!-- Content Management -->
+                <a href="{{ url_for('admin_projects') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint in ['admin_projects', 'add_project', 'edit_project'] %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    Projects
+                </a>
+                
+                <a href="{{ url_for('admin_services') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint in ['admin_services'] %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Services
+                </a>
+                
+                <a href="{{ url_for('admin_testimonials') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint in ['admin_testimonials'] %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    Testimonials
+                </a>
+                
+                <a href="{{ url_for('admin_clients') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint in ['admin_clients'] %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Clients
+                </a>
+                
+                <a href="{{ url_for('admin_newsletter') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_newsletter' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Newsletter
+                </a>
+                
+                <a href="{{ url_for('admin_messages') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint == 'admin_messages' %}bg-[#6C63FF]{% endif %}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Messages
+                </a>
+                
+                <hr class="my-4 border-gray-700">
+                
+                <!-- Blog Section -->
+                <div>
+                    <button id="blog-toggle" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition {% if request.endpoint.startswith('admin_blog') %}bg-[#6C63FF]{% endif %}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
+                        <span class="flex-1 text-left">Blog</span>
+                        <svg class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="blog-submenu" class="ml-8 space-y-1 mt-2 hidden">
+                        <a href="{{ url_for('admin_blog') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">📝 All Posts</a>
+                        <a href="{{ url_for('admin_blog_new') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">➕ New Post</a>
+                        <a href="{{ url_for('admin_blog_categories') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">📁 Categories</a>
+                        <a href="{{ url_for('admin_blog_comments') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">💬 Comments</a>
+                    </div>
+                </div>
+                
+                <hr class="my-4 border-gray-700">
+                
+                <!-- User Management -->
+                <div>
+                    <button id="user-toggle" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-[#6C63FF] transition">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <span class="flex-1 text-left">User Management</span>
+                        <svg class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="user-submenu" class="ml-8 space-y-1 mt-2 hidden">
+                        <a href="{{ url_for('admin_users') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">👥 Users</a>
+                        <a href="{{ url_for('admin_activity_logs') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">📋 Activity Logs</a>
+                        <a href="{{ url_for('admin_ip_whitelist') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">🔒 IP Whitelist</a>
+                        <a href="{{ url_for('admin_profile') }}" class="block px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition">👤 My Profile</a>
+                    </div>
+                </div>
+                
+                <hr class="my-4 border-gray-700">
+                
+                <a href="{{ url_for('index') }}" target="_blank" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    View Website
+                </a>
+                
+                <a href="{{ url_for('logout') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-red-600 transition mt-4">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <div class="p-8">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg border-l-4 border-green-500">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Auto-hide flash messages after 3 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.bg-green-100').forEach(el => {
+                el.style.display = 'none';
+            });
+        }, 3000);
+        
+        // Toggle blog submenu
+        const blogToggle = document.getElementById('blog-toggle');
+        const blogSubmenu = document.getElementById('blog-submenu');
+        if (blogToggle && blogSubmenu) {
+            if (window.location.href.includes('/admin/blog')) {
+                blogSubmenu.classList.remove('hidden');
+                const arrow = blogToggle.querySelector('svg:last-child');
+                if (arrow) arrow.classList.add('rotate-180');
+            }
+            blogToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                blogSubmenu.classList.toggle('hidden');
+                const arrow = blogToggle.querySelector('svg:last-child');
+                if (arrow) arrow.classList.toggle('rotate-180');
+            });
+        }
+        
+        // Toggle user management submenu
+        const userToggle = document.getElementById('user-toggle');
+        const userSubmenu = document.getElementById('user-submenu');
+        if (userToggle && userSubmenu) {
+            userToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                userSubmenu.classList.toggle('hidden');
+                const arrow = userToggle.querySelector('svg:last-child');
+                if (arrow) arrow.classList.toggle('rotate-180');
+            });
+        }
+    </script>
+</body>
+</html>

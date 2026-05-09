@@ -1,0 +1,125 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">Clients</h1>
+        <p class="text-gray-600 mt-1">Manage client logos displayed on the website.</p>
+    </div>
+    <button onclick="openAddModal()" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">+ Add Client</button>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left">Logo</th>
+                <th class="px-6 py-3 text-left">Name</th>
+                <th class="px-6 py-3 text-left">Website</th>
+                <th class="px-6 py-3 text-left">Order</th>
+                <th class="px-6 py-3 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr class="border-b">
+                <td class="px-6 py-4">
+                    {% if client.logo_url %}
+                    <img src="{{ client.logo_url }}" alt="{{ client.name }}" class="h-10 w-auto object-contain">
+                    {% else %}
+                    <div class="h-10 w-20 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No logo</div>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 font-medium">{{ client.name }}</td>
+                <td class="px-6 py-4">
+                    {% if client.website %}
+                    <a href="{{ client.website }}" target="_blank" class="text-blue-600 hover:underline">{{ client.website }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">{{ client.order }}</td>
+                <td class="px-6 py-4">
+                    <button onclick="editClient({{ client.id }}, '{{ client.name }}', '{{ client.website or '' }}', {{ client.order }})" class="text-blue-600 mr-3">Edit</button>
+                    <a href="{{ url_for('delete_client', id=client.id) }}" onclick="return confirm('Delete this client?')" class="text-red-600">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500">No clients added yet. Click "Add Client" to get started.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="clientModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl max-w-md w-full p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="modalTitle" class="text-xl font-bold">Add Client</h2>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <form id="clientForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" id="client_id" name="client_id">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Client Name *</label>
+                    <input type="text" id="name" name="name" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Website URL</label>
+                    <input type="url" id="website" name="website" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]" placeholder="https://example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Logo Image</label>
+                    <input type="file" id="logo" name="logo" accept="image/*" class="w-full mb-2">
+                    <input type="text" id="logo_url" name="logo_url" placeholder="Or enter image URL" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]">
+                    <p class="text-xs text-gray-500 mt-1">Upload a logo or provide an image URL</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Display Order</label>
+                    <input type="number" id="order" name="order" value="0" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]">
+                    <p class="text-xs text-gray-500 mt-1">Lower numbers appear first</p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">Save Client</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add Client';
+    document.getElementById('clientForm').reset();
+    document.getElementById('clientForm').action = "{{ url_for('admin_clients') }}";
+    document.getElementById('clientModal').classList.add('flex');
+    document.getElementById('clientModal').classList.remove('hidden');
+}
+
+function editClient(id, name, website, order) {
+    document.getElementById('modalTitle').textContent = 'Edit Client';
+    document.getElementById('name').value = name;
+    document.getElementById('website').value = website;
+    document.getElementById('order').value = order;
+    document.getElementById('clientForm').action = `/admin/clients/edit/${id}`;
+    document.getElementById('clientModal').classList.add('flex');
+    document.getElementById('clientModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('clientModal').classList.add('hidden');
+    document.getElementById('clientModal').classList.remove('flex');
+}
+
+// Close modal when clicking outside
+document.getElementById('clientModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}

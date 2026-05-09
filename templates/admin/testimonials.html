@@ -1,0 +1,76 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div><h1 class="text-3xl font-bold text-gray-800">Testimonials</h1><p class="text-gray-600 mt-1">Manage client testimonials shown on homepage.</p></div>
+    <button onclick="openAddModal()" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">+ Add Testimonial</button>
+</div>
+
+<div class="grid gap-6">
+    {% for t in testimonials %}
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex justify-between items-start">
+            <div class="flex items-center gap-4">
+                {% if t.image_url %}<img src="{{ t.image_url }}" class="w-12 h-12 rounded-full object-cover">{% else %}<div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">{{ t.name[0] }}</div>{% endif %}
+                <div><h3 class="font-semibold">{{ t.name }}</h3><p class="text-sm text-gray-500">{{ t.position }}, {{ t.company }}</p></div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="editTestimonial({{ t.id }})" class="text-blue-600">Edit</button>
+                <a href="{{ url_for('delete_testimonial', id=t.id) }}" onclick="return confirm('Delete?')" class="text-red-600">Delete</a>
+            </div>
+        </div>
+        <p class="mt-4 text-gray-600 italic">"{{ t.content[:150] }}..."</p>
+        <div class="mt-2 text-yellow-500">{"★" * t.rating}</div>
+        <div class="mt-2 text-sm text-gray-400">Order: {{ t.order }} | {% if t.active %}Active{% else %}Inactive{% endif %}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div id="testimonialModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-auto p-6">
+        <div class="flex justify-between items-center mb-4"><h2 id="modalTitle" class="text-xl font-bold">Add Testimonial</h2><button onclick="closeModal()" class="text-gray-500">✕</button></div>
+        <form id="testimonialForm" method="POST" enctype="multipart/form-data">
+            <div class="space-y-4">
+                <div><label>Name</label><input type="text" id="name" name="name" required class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label>Position</label><input type="text" id="position" name="position" required class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label>Company</label><input type="text" id="company" name="company" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label>Testimonial Content</label><textarea id="content" name="content" rows="4" required class="w-full px-3 py-2 border rounded-lg"></textarea></div>
+                <div><label>Rating (1-5)</label><input type="number" id="rating" name="rating" min="1" max="5" value="5" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label>Order</label><input type="number" id="order" name="order" value="0" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label>Image</label><input type="file" name="image" accept="image/*"><input type="text" name="image_url" placeholder="Or image URL" class="w-full mt-2 px-3 py-2 border rounded-lg"></div>
+                <div><label><input type="checkbox" id="active" name="active"> Active</label></div>
+            </div>
+            <div class="flex justify-end mt-6"><button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg">Save</button></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Add Testimonial';
+        document.getElementById('testimonialForm').reset();
+        document.getElementById('testimonialForm').action = "{{ url_for('admin_testimonials') }}";
+        document.getElementById('testimonialModal').classList.add('flex');
+    }
+    
+    function editTestimonial(id) {
+        fetch(`/admin/testimonials/data/${id}`).then(r => r.json()).then(data => {
+            document.getElementById('modalTitle').textContent = 'Edit Testimonial';
+            document.getElementById('name').value = data.name;
+            document.getElementById('position').value = data.position;
+            document.getElementById('company').value = data.company;
+            document.getElementById('content').value = data.content;
+            document.getElementById('rating').value = data.rating;
+            document.getElementById('order').value = data.order;
+            document.getElementById('active').checked = data.active;
+            document.getElementById('testimonialForm').action = `/admin/testimonials/edit/${id}`;
+            document.getElementById('testimonialModal').classList.add('flex');
+        });
+    }
+    
+    function closeModal() {
+        document.getElementById('testimonialModal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

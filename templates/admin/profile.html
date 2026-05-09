@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">My Profile</h1>
+    <p class="text-gray-600 mt-1">Manage your account settings.</p>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-8">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Account Information</h2>
+        <form method="POST">
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Username</label>
+                <input type="text" value="{{ user.username }}" disabled class="w-full px-3 py-2 border rounded-lg bg-gray-100">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input type="email" name="email" value="{{ user.email }}" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">New Password (leave blank to keep current)</label>
+                <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#6C63FF]">
+            </div>
+            <button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">Update Profile</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Two-Factor Authentication</h2>
+        {% if user.two_factor_enabled %}
+        <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-4">
+            ✅ 2FA is currently <strong>ENABLED</strong>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="enable_2fa" value="off">
+            <button type="submit" name="enable_2fa" value="off" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Disable 2FA</button>
+        </form>
+        {% else %}
+        <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg mb-4">
+            ⚠️ 2FA is currently <strong>DISABLED</strong>
+        </div>
+        {% if qr_code %}
+        <div class="text-center mb-4">
+            <p class="text-sm text-gray-600 mb-2">Scan this QR code with Google Authenticator or any 2FA app:</p>
+            <img src="data:image/png;base64,{{ qr_code }}" class="mx-auto mb-4">
+            <p class="text-xs text-gray-500">Secret key: <code>{{ user.two_factor_secret }}</code></p>
+        </div>
+        <form method="POST" action="{{ url_for('verify_2fa_setup') }}" class="mt-4">
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Enter 2FA Code to Enable</label>
+                <input type="text" name="token" required placeholder="000000" class="w-full px-3 py-2 border rounded-lg text-center text-xl tracking-widest focus:outline-none focus:border-[#6C63FF]">
+            </div>
+            <button type="submit" class="w-full px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">Enable 2FA</button>
+        </form>
+        {% else %}
+        <form method="POST">
+            <input type="hidden" name="enable_2fa" value="on">
+            <button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">Enable 2FA</button>
+        </form>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

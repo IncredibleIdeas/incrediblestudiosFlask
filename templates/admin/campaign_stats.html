@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Campaign Stats</h1>
+    <p class="text-gray-600 mt-1">Subject: {{ campaign.subject }}</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <p class="text-gray-500 text-sm">Total Sent</p>
+        <p class="text-3xl font-bold text-gray-800">{{ campaign.total_sent }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <p class="text-gray-500 text-sm">Total Opens</p>
+        <p class="text-3xl font-bold text-gray-800">{{ campaign.total_opened }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <p class="text-gray-500 text-sm">Open Rate</p>
+        <p class="text-3xl font-bold text-gray-800">{% if campaign.total_sent > 0 %}{{ (campaign.total_opened / campaign.total_sent * 100)|round(1) }}%{% else %}0%{% endif %}</p>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Opened By</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">Subscriber</th>
+                    <th class="px-4 py-2 text-left">Opened At</th>
+                    <th class="px-4 py-2 text-left">IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in tracking %}
+                <tr class="border-b">
+                    <td class="px-4 py-3">{{ track.subscriber_id }}</td>
+                    <td class="px-4 py-3">{{ track.opened_at.strftime('%Y-%m-%d %H:%M:%S') if track.opened_at else '-' }}</td>
+                    <td class="px-4 py-3">{{ track.ip_address or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('admin_newsletter') }}" class="text-[#6C63FF] hover:underline">← Back to Newsletter</a>
+</div>
+{% endblock %}

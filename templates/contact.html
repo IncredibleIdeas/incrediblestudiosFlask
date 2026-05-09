@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | {{ settings.site_name }}</title>
+    <meta name="description" content="Get in touch with {{ settings.site_name }} to discuss your project or inquire about our services">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+        .border-royal-purple { border-color: {{ settings.primary_color }}; }
+        .bg-teal { background-color: {{ settings.secondary_color }}; }
+        .text-teal { color: {{ settings.secondary_color }}; }
+        .focus\:ring-royal-purple:focus { --tw-ring-color: {{ settings.primary_color }}; }
+        .focus\:border-royal-purple:focus { border-color: {{ settings.primary_color }}; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div><a href="{{ url_for('index') }}" class="text-3xl font-bold"><span class="logo-text text-royal-purple">{{ settings.logo_text }}</span><span class="logo-studio text-slate">{{ settings.studio_text }}</span></a></div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-slate hover:text-royal-purple transition">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-slate hover:text-royal-purple transition">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-slate hover:text-royal-purple transition">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Contact</a>
+                </div>
+                <div class="md:hidden"><button id="mobile-menu-button" class="text-slate hover:text-royal-purple"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-royal-purple bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">Let's Connect</h1>
+            <p class="text-lg md:text-xl text-slate opacity-90 max-w-3xl mx-auto">Ready to start your next project or have questions about our services? We'd love to hear from you.</p>
+        </div>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div>
+                    <h2 class="text-3xl font-montserrat font-bold text-slate mb-6">Send Us a Message</h2>
+                    <form id="contact-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label class="block text-sm font-medium text-slate mb-1">Name</label><input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-cool-gray rounded-lg focus:ring-2 focus:ring-royal-purple focus:border-royal-purple transition"></div>
+                            <div><label class="block text-sm font-medium text-slate mb-1">Email</label><input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-cool-gray rounded-lg focus:ring-2 focus:ring-royal-purple focus:border-royal-purple transition"></div>
+                        </div>
+                        <div><label class="block text-sm font-medium text-slate mb-1">Subject</label><input type="text" id="subject" name="subject" required class="w-full px-4 py-3 border border-cool-gray rounded-lg focus:ring-2 focus:ring-royal-purple focus:border-royal-purple transition"></div>
+                        <div><label class="block text-sm font-medium text-slate mb-1">Service Interested In</label><select id="service" name="service" class="w-full px-4 py-3 border border-cool-gray rounded-lg focus:ring-2 focus:ring-royal-purple focus:border-royal-purple transition"><option value="">Select a service</option><option value="web-design">Web Design</option><option value="branding">Branding</option><option value="motion-graphics">Motion Graphics</option><option value="ui-ux">UI/UX Design</option><option value="development">Development</option></select></div>
+                        <div><label class="block text-sm font-medium text-slate mb-1">Message</label><textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 border border-cool-gray rounded-lg focus:ring-2 focus:ring-royal-purple focus:border-royal-purple transition"></textarea></div>
+                        <div><button type="submit" class="w-full px-6 py-4 bg-royal-purple text-white font-medium rounded-lg hover:bg-opacity-90 transition shadow-lg">Send Message</button></div>
+                    </form>
+                    <div id="form-success" class="mt-6 p-4 bg-teal bg-opacity-10 text-teal rounded-lg hidden"><p>Thank you for your message! We'll get back to you soon.</p></div>
+                </div>
+                <!-- Contact Info -->
+                <div>
+                    <h2 class="text-3xl font-montserrat font-bold text-slate mb-6">Contact Information</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-start"><div class="h-12 w-12 rounded-full bg-royal-purple bg-opacity-10 flex items-center justify-center flex-shrink-0"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div><div class="ml-4"><h3 class="text-lg font-montserrat font-semibold text-slate mb-1">Our Studio</h3><p class="text-slate opacity-90">{{ settings.contact_address }}</p></div></div>
+                        <div class="flex items-start"><div class="h-12 w-12 rounded-full bg-royal-purple bg-opacity-10 flex items-center justify-center flex-shrink-0"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div><div class="ml-4"><h3 class="text-lg font-montserrat font-semibold text-slate mb-1">Call Us</h3><p class="text-slate opacity-90">{{ settings.contact_phone }}</p><p class="text-sm text-slate opacity-80">Mon-Fri, 9am-6pm PST</p></div></div>
+                        <div class="flex items-start"><div class="h-12 w-12 rounded-full bg-royal-purple bg-opacity-10 flex items-center justify-center flex-shrink-0"><svg class="h-6 w-6 text-royal-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div class="ml-4"><h3 class="text-lg font-montserrat font-semibold text-slate mb-1">Email Us</h3><p class="text-slate opacity-90">{{ settings.contact_email }}</p><p class="text-sm text-slate opacity-80">We typically respond within 24 hours</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Map -->
+            <div class="mt-16">
+                <h2 class="text-2xl font-montserrat font-bold text-slate mb-6 text-center">Find Us Here</h2>
+                <div class="w-full h-80 rounded-lg overflow-hidden shadow-lg">
+                    <iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q={{ settings.contact_address|urlencode }}&output=embed"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        // Mobile menu
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenuDiv = document.getElementById('mobile-menu');
+        if(mobileBtn) mobileBtn.onclick = () => mobileMenuDiv.classList.toggle('hidden');
+        
+        // Back to top
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Contact form submission
+        const form = document.getElementById('contact-form');
+        const successMsg = document.getElementById('form-success');
+        if(form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                try {
+                    const res = await fetch('{{ url_for("contact") }}', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if(data.success) {
+                        form.reset();
+                        successMsg.classList.remove('hidden');
+                        setTimeout(() => successMsg.classList.add('hidden'), 5000);
+                    }
+                } catch(err) { console.error(err); }
+            });
+        }
+    </script>
+</body>
+</html>

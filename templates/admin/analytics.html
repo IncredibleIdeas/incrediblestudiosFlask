@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Advanced Analytics</h1>
+    <p class="text-gray-600 mt-1">Real-time visitor tracking and statistics.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="start_date" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="end_date" class="w-full px-3 py-2 border rounded-lg"></div>
+        <div class="flex items-end"><button onclick="fetchAnalytics()" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg">Apply Filter</button></div>
+        <div class="flex items-end gap-2"><button onclick="exportData('csv')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Export CSV</button></div>
+    </div>
+</div>
+
+<div class="grid lg:grid-cols-4 gap-6 mb-8" id="stats-cards"></div>
+<div class="grid lg:grid-cols-2 gap-6 mb-8"><div class="bg-white rounded-xl shadow-sm p-6"><h3 class="text-lg font-semibold text-gray-800 mb-4">Views Over Time</h3><canvas id="viewsChart" height="200"></canvas></div><div class="bg-white rounded-xl shadow-sm p-6"><h3 class="text-lg font-semibold text-gray-800 mb-4">Device Breakdown</h3><canvas id="deviceChart" height="200"></canvas></div></div>
+<div class="grid lg:grid-cols-2 gap-6 mb-8"><div class="bg-white rounded-xl shadow-sm p-6"><h3 class="text-lg font-semibold text-gray-800 mb-4">Browser Statistics</h3><canvas id="browserChart" height="200"></canvas></div><div class="bg-white rounded-xl shadow-sm p-6"><h3 class="text-lg font-semibold text-gray-800 mb-4">Operating Systems</h3><canvas id="osChart" height="200"></canvas></div></div>
+<div class="bg-white rounded-xl shadow-sm p-6"><h3 class="text-lg font-semibold text-gray-800 mb-4">Most Visited Pages</h3><table class="w-full"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left">Page</th><th class="px-4 py-2 text-left">Views</th></tr></thead><tbody id="page-stats"></tbody></table></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let viewsChart, deviceChart, browserChart, osChart;
+
+function fetchAnalytics() {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    let url = '/admin/analytics/data';
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    if (params.toString()) url += '?' + params.toString();
+    
+    fetch(url).then(r => r.json()).then(data => {
+        document.getElementById('stats-cards').innerHTML = `
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center"><p class="text-gray-500 text-sm">Total Views</p><p class="text-3xl font-bold text-gray-800">${data.total_views}</p></div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center"><p class="text-gray-500 text-sm">Unique Visitors</p><p class="text-3xl font-bold text-gray-800">${data.unique_visitors}</p></div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center"><p class="text-gray-500 text-sm">Form Submissions</p><p class="text-3xl font-bold text-gray-800">${data.form_submissions}</p></div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center"><p class="text-gray-500 text-sm">Conversion Rate</p><p class="text-3xl font-bold text-gray-800">${data.conversion_rate}%</p></div>
+        `;
+        
+        if (viewsChart) viewsChart.destroy();
+        viewsChart = new Chart(document.getElementById('viewsChart'), { type: 'line', data: { labels: data.views_over_time.map(d => d.date), datasets: [{ label: 'Page Views', data: data.views_over_time.map(d => d.count), borderColor: '#6C63FF', backgroundColor: 'rgba(108,99,255,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } });
+        
+        if (deviceChart) deviceChart.destroy();
+        deviceChart = new Chart(document.getElementById('deviceChart'), { type: 'doughnut', data: { labels: data.device_stats.map(d => d.name), datasets: [{ data: data.device_stats.map(d => d.value), backgroundColor: ['#6C63FF', '#00BFA6', '#FF6B6B', '#FFD93D'] }] } });
+        
+        if (browserChart) browserChart.destroy();
+        browserChart = new Chart(document.getElementById('browserChart'), { type: 'pie', data: { labels: data.browser_stats.map(d => d.name), datasets: [{ data: data.browser_stats.map(d => d.value), backgroundColor: ['#6C63FF', '#00BFA6', '#FF6B6B', '#FFD93D', '#4ECDC4'] }] } });
+        
+        if (osChart) osChart.destroy();
+        osChart = new Chart(document.getElementById('osChart'), { type: 'bar', data: { labels: data.os_stats.map(d => d.name), datasets: [{ label: 'Visitors', data: data.os_stats.map(d => d.value), backgroundColor: '#6C63FF' }] } });
+        
+        document.getElementById('page-stats').innerHTML = data.page_stats.map(p => `<tr class="border-b"><td class="px-4 py-2">${p.page}</td><td class="px-4 py-2">${p.views}</td></tr>`).join('');
+    });
+}
+
+function exportData(format) {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    window.location.href = `/admin/analytics/export?format=${format}&start_date=${startDate}&end_date=${endDate}`;
+}
+
+fetchAnalytics();
+</script>
+{% endblock %}

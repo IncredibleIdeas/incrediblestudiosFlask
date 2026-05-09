@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">SEO Tools</h1>
+    <p class="text-gray-600 mt-1">Manage search engine optimization settings.</p>
+</div>
+
+<form method="POST" action="{{ url_for('update_seo') }}" class="bg-white rounded-xl shadow-sm p-6">
+    <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Meta Tags</h3>
+            <div class="mb-4"><label class="block text-sm font-medium mb-1">Google Analytics ID</label><input type="text" name="google_analytics_id" value="{{ settings.google_analytics_id }}" class="w-full px-3 py-2 border rounded-lg" placeholder="UA-XXXXXXXXX-X or G-XXXXXXXXXX"></div>
+            <div class="mb-4"><label class="block text-sm font-medium mb-1">Meta Description</label><textarea name="meta_description" rows="3" class="w-full px-3 py-2 border rounded-lg">{{ settings.meta_description }}</textarea><p class="text-xs text-gray-500 mt-1">Recommended length: 150-160 characters</p></div>
+            <div class="mb-4"><label class="block text-sm font-medium mb-1">Meta Keywords</label><input type="text" name="meta_keywords" value="{{ settings.meta_keywords }}" class="w-full px-3 py-2 border rounded-lg" placeholder="keyword1, keyword2, keyword3"></div>
+            <div class="mb-4"><label class="block text-sm font-medium mb-1">Meta Author</label><input type="text" name="meta_author" value="{{ settings.meta_author }}" class="w-full px-3 py-2 border rounded-lg"></div>
+        </div>
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">robots.txt Editor</h3>
+            <div class="mb-4"><label class="block text-sm font-medium mb-1">robots.txt Content</label><textarea name="robots_txt" rows="10" class="w-full px-3 py-2 border rounded-lg font-mono text-sm">{{ settings.robots_txt }}</textarea></div>
+            <p class="text-sm text-gray-500">Current sitemap URL: <a href="{{ url_for('sitemap', _external=True) }}" target="_blank" class="text-[#6C63FF] hover:underline">{{ url_for('sitemap', _external=True) }}</a></p>
+        </div>
+    </div>
+    <div class="flex justify-end pt-6 border-t mt-6"><button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">Save SEO Settings</button></div>
+</form>
+
+<div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick SEO Tips</h3>
+    <ul class="space-y-2 text-gray-600">
+        <li>✓ Use descriptive, keyword-rich titles for your pages</li>
+        <li>✓ Write unique meta descriptions for each page</li>
+        <li>✓ Use heading tags (H1, H2, H3) properly</li>
+        <li>✓ Optimize images with alt text</li>
+        <li>✓ Ensure your site is mobile-friendly</li>
+        <li>✓ Improve page load speed</li>
+        <li>✓ Build quality backlinks</li>
+    </ul>
+</div>
+{% endblock %}

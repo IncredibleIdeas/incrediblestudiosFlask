@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - {{ settings.site_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&family=Allura&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-purple': '{{ settings.primary_color }}',
+                        'teal': '{{ settings.secondary_color }}',
+                        'cool-gray': '#E0E0E0',
+                        'slate': '#2F2F3C',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                        'allura': ['Allura', 'cursive'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .logo-studio { font-family: 'Allura', cursive; margin-left: -8px; }
+        .bg-royal-purple { background-color: {{ settings.primary_color }}; }
+        .text-royal-purple { color: {{ settings.primary_color }}; }
+    </style>
+</head>
+<body class="bg-white font-opensans text-slate">
+    <!-- Navigation (same as index.html) -->
+    <nav class="fixed w-full bg-white bg-opacity-90 shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div><a href="{{ url_for('index') }}" class="text-3xl font-bold"><span class="logo-text text-royal-purple">{{ settings.logo_text }}</span><span class="logo-studio text-slate">{{ settings.studio_text }}</span></a></div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-slate hover:text-royal-purple transition">Home</a>
+                    <a href="{{ url_for('about') }}" class="text-slate hover:text-royal-purple transition">About</a>
+                    <a href="{{ url_for('services') }}" class="text-slate hover:text-royal-purple transition">Services</a>
+                    <a href="{{ url_for('portfolio') }}" class="text-slate hover:text-royal-purple transition">Portfolio</a>
+                    <a href="{{ url_for('blog_index') }}" class="text-royal-purple font-medium border-b-2 border-royal-purple px-1 pb-1">Blog</a>
+                    <a href="{{ url_for('contact') }}" class="text-slate hover:text-royal-purple transition">Contact</a>
+                </div>
+                <div class="md:hidden"><button id="mobile-menu-button" class="text-slate hover:text-royal-purple"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Home</a>
+                <a href="{{ url_for('about') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">About</a>
+                <a href="{{ url_for('services') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Services</a>
+                <a href="{{ url_for('portfolio') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Portfolio</a>
+                <a href="{{ url_for('blog_index') }}" class="block px-3 py-2 rounded-md text-royal-purple bg-cool-gray">Blog</a>
+                <a href="{{ url_for('contact') }}" class="block px-3 py-2 rounded-md text-slate hover:text-royal-purple hover:bg-cool-gray">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-white to-cool-gray">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-montserrat font-bold text-slate mb-4">Search Results</h1>
+            <p class="text-lg md:text-xl text-slate opacity-90">Showing results for: "{{ query }}"</p>
+        </div>
+    </div>
+
+    <div class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            {% if posts and posts.items %}
+                {% for post in posts.items %}
+                <article class="mb-8 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
+                    <div class="p-6">
+                        <h2 class="text-xl font-montserrat font-bold text-slate mb-2"><a href="{{ url_for('blog_post', slug=post.slug) }}" class="hover:text-royal-purple">{{ post.title }}</a></h2>
+                        <p class="text-slate opacity-80">{{ post.excerpt or post.content[:150]|striptags }}...</p>
+                        <a href="{{ url_for('blog_post', slug=post.slug) }}" class="text-teal text-sm mt-2 inline-block">Read More →</a>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500">No posts found matching "{{ query }}".</p>
+                    <a href="{{ url_for('blog_index') }}" class="text-teal hover:underline mt-4 inline-block">← Back to Blog</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="bg-slate text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center"><p class="text-cool-gray text-sm">&copy; 2025 {{ settings.site_name }}. {{ settings.footer_copyright }}</p></div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-royal-purple text-white p-3 rounded-full shadow-lg hidden">↑</button>
+
+    <script>
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenuDiv = document.getElementById('mobile-menu');
+        if(mobileBtn) mobileBtn.onclick = () => mobileMenuDiv.classList.toggle('hidden');
+        
+        const backBtn = document.getElementById('back-to-top');
+        window.onscroll = () => { if(backBtn) backBtn.classList.toggle('hidden', window.pageYOffset <= 300); };
+        if(backBtn) backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Site Settings</h1>
+    <p class="text-gray-600 mt-1">Customize every aspect of your website - from branding to content sections.</p>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+    <!-- Tab Navigation -->
+    <div class="border-b border-gray-200 mb-6">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="settings-tabs">
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="branding">Branding</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="hero">Hero Section</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="sections">Section Titles</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="clients">Clients</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="cta">CTA Section</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="contact">Contact & Footer</button></li>
+            <li class="mr-2"><button type="button" class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" data-tab="about">About Page</button></li>
+        </ul>
+    </div>
+
+    <!-- Tab 1: Branding -->
+    <div id="tab-branding" class="tab-content bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Branding Settings</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div><label class="block text-sm font-medium mb-1">Site Name</label><input type="text" name="site_name" value="{{ settings.site_name }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Site Tagline</label><input type="text" name="site_tagline" value="{{ settings.site_tagline }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Logo Text</label><input type="text" name="logo_text" value="{{ settings.logo_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Studio Text</label><input type="text" name="studio_text" value="{{ settings.studio_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Since Year</label><input type="text" name="since_year" value="{{ settings.since_year }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Footer Text</label><textarea name="footer_text" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.footer_text }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">Primary Color</label><input type="color" name="primary_color" value="{{ settings.primary_color }}" class="w-full h-10 border rounded"></div>
+            <div><label class="block text-sm font-medium mb-1">Secondary Color</label><input type="color" name="secondary_color" value="{{ settings.secondary_color }}" class="w-full h-10 border rounded"></div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Hero Section -->
+    <div id="tab-hero" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Hero Section Content</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div><label class="block text-sm font-medium mb-1">Hero Title Prefix</label><input type="text" name="hero_title_prefix" value="{{ settings.hero_title_prefix }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Hero Title Highlight</label><input type="text" name="hero_title_highlight" value="{{ settings.hero_title_highlight }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Hero Description</label><textarea name="hero_description" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.hero_description }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">Button 1 Text</label><input type="text" name="hero_button_text" value="{{ settings.hero_button_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Button 2 Text</label><input type="text" name="hero_button2_text" value="{{ settings.hero_button2_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Hero Badge Text</label><input type="text" name="hero_badge_text" value="{{ settings.hero_badge_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1">Hero Image</label>
+                {% if settings.hero_image %}<img src="{{ settings.hero_image }}" class="h-32 w-auto object-cover rounded mb-2">{% endif %}
+                <input type="file" name="hero_image" accept="image/*" class="mb-2">
+                <input type="text" name="hero_image_url" placeholder="Or enter image URL" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Section Titles -->
+    <div id="tab-sections" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Section Titles & Descriptions</h3>
+        <div class="space-y-6">
+            <div><label class="block text-sm font-medium mb-1">Clients Section Title</label><input type="text" name="clients_title" value="{{ settings.clients_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Services Badge</label><input type="text" name="services_badge" value="{{ settings.services_badge }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Services Title</label><input type="text" name="services_title" value="{{ settings.services_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Services Subtitle</label><textarea name="services_subtitle" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.services_subtitle }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">Portfolio Badge</label><input type="text" name="portfolio_badge" value="{{ settings.portfolio_badge }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Portfolio Title</label><input type="text" name="portfolio_title" value="{{ settings.portfolio_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Portfolio Subtitle</label><textarea name="portfolio_subtitle" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.portfolio_subtitle }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">Testimonials Badge</label><input type="text" name="testimonials_badge" value="{{ settings.testimonials_badge }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Testimonials Title</label><input type="text" name="testimonials_title" value="{{ settings.testimonials_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Testimonials Subtitle</label><textarea name="testimonials_subtitle" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.testimonials_subtitle }}</textarea></div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Clients -->
+    <div id="tab-clients" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Client Logos Section</h3>
+        <div><label class="block text-sm font-medium mb-1">Client Names (comma-separated)</label><input type="text" name="clients_list" value="{{ clients_list|join(', ') }}" class="w-full px-3 py-2 border rounded-lg" placeholder="Brand 1, Brand 2, Brand 3"></div>
+        <p class="text-xs text-gray-500 mt-1">Enter client names separated by commas. They will appear as placeholder logos.</p>
+    </div>
+
+    <!-- Tab 5: CTA Section -->
+    <div id="tab-cta" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Call-to-Action Section</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">CTA Title</label><input type="text" name="cta_title" value="{{ settings.cta_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">CTA Description</label><textarea name="cta_description" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.cta_description }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">CTA Button 1 Text</label><input type="text" name="cta_button_text" value="{{ settings.cta_button_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">CTA Button 2 Text</label><input type="text" name="cta_button2_text" value="{{ settings.cta_button2_text }}" class="w-full px-3 py-2 border rounded-lg"></div>
+        </div>
+    </div>
+
+    <!-- Tab 6: Contact & Footer -->
+    <div id="tab-contact" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Contact Information & Footer</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div><label class="block text-sm font-medium mb-1">Email Address</label><input type="email" name="contact_email" value="{{ settings.contact_email }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">Phone Number</label><input type="text" name="contact_phone" value="{{ settings.contact_phone }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Address</label><textarea name="contact_address" rows="2" class="w-full px-3 py-2 border rounded-lg">{{ settings.contact_address }}</textarea></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Business Hours</label><input type="text" name="contact_hours" value="{{ settings.contact_hours }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Footer Copyright</label><input type="text" name="footer_copyright" value="{{ settings.footer_copyright }}" class="w-full px-3 py-2 border rounded-lg"></div>
+        </div>
+    </div>
+
+    <!-- Tab 7: About Page -->
+    <div id="tab-about" class="tab-content bg-white rounded-xl shadow-sm p-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">About Page Content</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">About Title</label><input type="text" name="about_title" value="{{ settings.about_title }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            <div><label class="block text-sm font-medium mb-1">About Description</label><textarea name="about_description" rows="3" class="w-full px-3 py-2 border rounded-lg">{{ settings.about_description }}</textarea></div>
+            <div><label class="block text-sm font-medium mb-1">About Description 2</label><textarea name="about_description2" rows="3" class="w-full px-3 py-2 border rounded-lg">{{ settings.about_description2 }}</textarea></div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div><label class="block text-sm font-medium mb-1">Projects Count</label><input type="text" name="projects_count" value="{{ settings.projects_count }}" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Projects Label</label><input type="text" name="projects_label" value="{{ settings.projects_label }}" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Clients Count</label><input type="text" name="clients_count" value="{{ settings.clients_count }}" class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Clients Label</label><input type="text" name="clients_label" value="{{ settings.clients_label }}" class="w-full px-3 py-2 border rounded-lg"></div>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1">About Page Image</label>
+                {% if settings.about_image %}<img src="{{ settings.about_image }}" class="h-32 w-auto object-cover rounded mb-2">{% endif %}
+                <input type="file" name="about_image" accept="image/*" class="mb-2">
+                <input type="text" name="about_image_url" placeholder="Or enter image URL" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-end pt-6 mt-6 border-t">
+        <button type="submit" class="px-6 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90 transition">Save All Changes</button>
+    </div>
+</form>
+
+<script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    function showTab(tabId) {
+        contents.forEach(content => content.classList.add('hidden'));
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        tabs.forEach(tab => {
+            tab.classList.remove('border-[#6C63FF]', 'text-[#6C63FF]');
+            tab.classList.add('border-transparent', 'text-gray-500');
+        });
+        const activeTab = Array.from(tabs).find(t => t.dataset.tab === tabId);
+        if(activeTab) {
+            activeTab.classList.remove('border-transparent', 'text-gray-500');
+            activeTab.classList.add('border-[#6C63FF]', 'text-[#6C63FF]');
+        }
+    }
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => showTab(tab.dataset.tab));
+    });
+    
+    // Show first tab by default
+    showTab('branding');
+</script>
+{% endblock %}

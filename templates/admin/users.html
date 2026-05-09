@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">User Management</h1>
+        <p class="text-gray-600 mt-1">Manage admin users and their roles.</p>
+    </div>
+    <button onclick="openAddModal()" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">+ Add User</button>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left">Username</th>
+                <th class="px-6 py-3 text-left">Email</th>
+                <th class="px-6 py-3 text-left">Role</th>
+                <th class="px-6 py-3 text-left">Status</th>
+                <th class="px-6 py-3 text-left">Last Login</th>
+                <th class="px-6 py-3 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="border-b">
+                <td class="px-6 py-4 font-medium">{{ user.username }} {% if user.id == current_user.id %}<span class="text-xs text-gray-500">(You)</span>{% endif %}</td>
+                <td class="px-6 py-4">{{ user.email }}</td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded-full text-xs {% if user.role == 'super_admin' %}bg-purple-100 text-purple-600{% elif user.role == 'editor' %}bg-blue-100 text-blue-600{% else %}bg-gray-100 text-gray-600{% endif %}">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td class="px-6 py-4">{% if user.is_active %}✅ Active{% else %}❌ Inactive{% endif %}</td>
+                <td class="px-6 py-4 text-sm">{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '-' }}</td>
+                <td class="px-6 py-4">
+                    <button onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.role }}', {{ user.is_active|lower }})" class="text-blue-600 mr-3">Edit</button>
+                    {% if user.id != current_user.id %}
+                    <a href="{{ url_for('delete_user', id=user.id) }}" onclick="return confirm('Delete this user?')" class="text-red-600">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="userModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl max-w-md w-full p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="modalTitle" class="text-xl font-bold">Add User</h2>
+            <button onclick="closeModal()" class="text-gray-500">✕</button>
+        </div>
+        <form id="userForm" method="POST" action="{{ url_for('add_user') }}">
+            <input type="hidden" id="user_id" name="user_id">
+            <div class="space-y-4">
+                <div><label class="block text-sm font-medium mb-1">Username</label><input type="text" id="username" name="username" required class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Email</label><input type="email" id="email" name="email" required class="w-full px-3 py-2 border rounded-lg"></div>
+                <div><label class="block text-sm font-medium mb-1">Password</label><input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg"><p class="text-xs text-gray-500 mt-1">Leave blank to keep current password when editing</p></div>
+                <div><label class="block text-sm font-medium mb-1">Role</label><select id="role" name="role" class="w-full px-3 py-2 border rounded-lg"><option value="viewer">Viewer</option><option value="editor">Editor</option><option value="super_admin">Super Admin</option></select></div>
+                <div><label class="flex items-center"><input type="checkbox" id="is_active" name="is_active" class="mr-2"> <span>Active</span></label></div>
+            </div>
+            <div class="flex justify-end mt-6"><button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg">Save User</button></div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add User';
+    document.getElementById('userForm').reset();
+    document.getElementById('userForm').action = "{{ url_for('add_user') }}";
+    document.getElementById('userModal').classList.add('flex');
+}
+
+function editUser(id, username, email, role, isActive) {
+    document.getElementById('modalTitle').textContent = 'Edit User';
+    document.getElementById('username').value = username;
+    document.getElementById('email').value = email;
+    document.getElementById('role').value = role;
+    document.getElementById('is_active').checked = isActive;
+    document.getElementById('userForm').action = `/admin/users/edit/${id}`;
+    document.getElementById('userModal').classList.add('flex');
+}
+
+function closeModal() {
+    document.getElementById('userModal').classList.remove('flex');
+}
+</script>
+{% endblock %}

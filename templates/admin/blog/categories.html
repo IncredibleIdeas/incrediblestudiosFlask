@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">Blog Categories</h1>
+        <p class="text-gray-600 mt-1">Manage blog categories.</p>
+    </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-8">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-4">Add New Category</h2>
+        <form method="POST" action="{{ url_for('admin_blog_category_add') }}">
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Name</label>
+                <input type="text" name="name" required class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Description</label>
+                <textarea name="description" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
+            </div>
+            <button type="submit" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg">Add Category</button>
+        </form>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-4">Existing Categories</h2>
+        {% for cat in categories %}
+        <div class="border-b py-4">
+            <form method="POST" action="{{ url_for('admin_blog_category_edit', id=cat.id) }}" class="flex flex-wrap gap-2 items-end">
+                <div class="flex-1">
+                    <input type="text" name="name" value="{{ cat.name }}" class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div class="flex-1">
+                    <textarea name="description" rows="1" class="w-full px-3 py-2 border rounded-lg">{{ cat.description or '' }}</textarea>
+                </div>
+                <button type="submit" class="px-3 py-2 bg-blue-500 text-white rounded-lg">Update</button>
+                <a href="{{ url_for('admin_blog_category_delete', id=cat.id) }}" onclick="return confirm('Delete this category?')" class="px-3 py-2 bg-red-500 text-white rounded-lg text-center">Delete</a>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

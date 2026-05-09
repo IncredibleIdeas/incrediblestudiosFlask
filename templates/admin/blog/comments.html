@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Blog Comments</h1>
+    <p class="text-gray-600 mt-1">Moderate blog comments.</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left">Post</th>
+                <th class="px-6 py-3 text-left">Author</th>
+                <th class="px-6 py-3 text-left">Comment</th>
+                <th class="px-6 py-3 text-left">Status</th>
+                <th class="px-6 py-3 text-left">Date</th>
+                <th class="px-6 py-3 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            <tr class="border-b">
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('blog_post', slug=comment.post.slug) }}" class="text-blue-600 hover:underline">{{ comment.post.title[:30] }}</a>
+                </td>
+                <td class="px-6 py-4">
+                    <strong>{{ comment.author_name }}</strong><br>
+                    <span class="text-xs text-gray-500">{{ comment.author_email }}</span>
+                </td>
+                <td class="px-6 py-4">{{ comment.content[:100] }}...</td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded-full text-xs {% if comment.status == 'approved' %}bg-green-100 text-green-600{% elif comment.status == 'pending' %}bg-yellow-100 text-yellow-600{% else %}bg-red-100 text-red-600{% endif %}">
+                        {{ comment.status }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-sm">{{ comment.created_at.strftime('%Y-%m-%d') }}</td>
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('admin_blog_comment_approve', id=comment.id) }}" class="text-green-600 mr-2">Approve</a>
+                    <a href="{{ url_for('admin_blog_comment_spam', id=comment.id) }}" class="text-orange-600 mr-2">Spam</a>
+                    <a href="{{ url_for('admin_blog_comment_delete', id=comment.id) }}" onclick="return confirm('Delete this comment?')" class="text-red-600">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

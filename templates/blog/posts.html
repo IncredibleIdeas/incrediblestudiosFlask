@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">Blog Posts</h1>
+        <p class="text-gray-600 mt-1">Manage your blog content.</p>
+    </div>
+    <a href="{{ url_for('admin_blog_new') }}" class="px-4 py-2 bg-[#6C63FF] text-white rounded-lg hover:bg-opacity-90">+ New Post</a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr><th class="px-6 py-3 text-left">Title</th><th class="px-6 py-3 text-left">Category</th><th class="px-6 py-3 text-left">Status</th><th class="px-6 py-3 text-left">Views</th><th class="px-6 py-3 text-left">Date</th><th class="px-6 py-3 text-left">Actions</th></tr></thead>
+        <tbody>
+            {% for post in posts %}
+            <tr class="border-b">
+                <td class="px-6 py-4 font-medium">{{ post.title }}</td>
+                <td class="px-6 py-4">{{ post.category.name if post.category else '-' }}</td>
+                <td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-xs {% if post.status == 'published' %}bg-green-100 text-green-600{% elif post.status == 'draft' %}bg-yellow-100 text-yellow-600{% else %}bg-blue-100 text-blue-600{% endif %}">{{ post.status }}</span></td>
+                <td class="px-6 py-4">{{ post.views }}</td>
+                <td class="px-6 py-4 text-sm">{{ post.created_at.strftime('%Y-%m-%d') }}</td>
+                <td class="px-6 py-4"><a href="{{ url_for('admin_blog_edit', id=post.id) }}" class="text-blue-600 mr-3">Edit</a><a href="{{ url_for('admin_blog_delete', id=post.id) }}" onclick="return confirm('Delete this post?')" class="text-red-600">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
